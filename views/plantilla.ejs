@@ -5,86 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= data.brandName %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --accent: <%= data.colorBtn %>; --glass: rgba(255, 255, 255, 0.7); }
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Hero con Parallax Suave */
-        .hero-section {
-            height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('<%= data.heroImg %>');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            display: flex; align-items: center; justify-content: center; color: white;
-            text-align: center; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-        }
-
-        /* Glass Cards */
-        .glass-card {
-            background: var(--glass); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 30px;
-            padding: 40px; transition: 0.4s;
-        }
-        .glass-card:hover { transform: translateY(-10px); background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-
-        .btn-premium {
-            background: var(--accent); color: white; border: none;
-            padding: 18px 45px; border-radius: 100px; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
-        }
-        .btn-premium:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.2); color: white; }
-
-        .service-icon { color: var(--accent); font-size: 2.5rem; margin-bottom: 20px; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero { height: 80vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<%= data.heroImg %>'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+        .section-title { font-weight: 800; margin-bottom: 50px; text-align: center; }
+        .glass-card { background: #f8fafc; border-radius: 20px; padding: 30px; border: none; transition: 0.3s; height: 100%; }
+        .glass-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
-    <header class="hero-section">
-        <div class="container animate__animated animate__fadeInUp">
-            <h1 class="display-1 fw-black mb-3"><%= data.brandName %></h1>
-            <p class="fs-2 opacity-90 mb-5 fw-light"><%= data.slogan %></p>
-            <a href="#contacto" class="btn-premium">Reservar Ahora</a>
+    <header class="hero">
+        <div class="container">
+            <% if(data.logo) { %><img src="<%= data.logo %>" height="100" class="mb-4"><% } %>
+            <h1 class="display-1 fw-bold"><%= data.brandName %></h1>
         </div>
     </header>
 
-    <main class="container py-5 mt-n5">
-        <div class="row g-4 py-5" id="servicios">
-            <% (data.services || []).forEach((s, i) => { %>
-                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: <%= i*0.1 %>s">
-                    <div class="glass-card h-100">
-                        <div class="service-icon">✦</div>
-                        <h3 class="fw-bold"><%= s.title %></h3>
-                        <p class="text-muted"><%= s.desc %></p>
-                        <hr class="opacity-10">
-                        <div class="fs-3 fw-black" style="color: var(--accent)"><%= s.price %></div>
-                    </div>
-                </div>
-            <% }) %>
-        </div>
+    <div class="container py-5">
+        <section class="py-5">
+            <h2 class="section-title">Nuestra Historia</h2>
+            <p class="fs-5 text-center text-muted" style="max-width: 800px; margin: 0 auto;"><%= data.aboutText %></p>
+        </section>
 
-        <section id="contacto" class="py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="text-center mb-5">
-                        <h2 class="display-4 fw-bold">Hablemos de tu proyecto</h2>
-                        <p class="text-muted">Completá tus datos y te contactaremos en menos de 24hs.</p>
-                    </div>
-                    <div class="glass-card shadow-lg border-0 p-5">
-                        <form action="https://formspree.io/f/<%= data.email %>" method="POST" class="row g-4">
-                            <div class="col-md-6"><input type="text" name="name" class="form-control form-control-lg bg-light border-0 p-4" placeholder="Nombre completo" required></div>
-                            <div class="col-md-6"><input type="email" name="email" class="form-control form-control-lg bg-light border-0 p-4" placeholder="Email" required></div>
-                            <div class="col-12"><textarea name="msg" class="form-control form-control-lg bg-light border-0 p-4" rows="5" placeholder="¿En qué podemos ayudarte?"></textarea></div>
-                            <div class="col-12"><button type="submit" class="btn-premium w-100 py-4 fs-4">Enviar Mensaje</button></div>
-                        </form>
-                    </div>
+        <section class="py-5">
+            <h2 class="section-title">Nuestros Productos</h2>
+            <div class="row g-4">
+                <% (data.products || []).forEach(p => { %>
+                    <div class="col-md-4"><div class="glass-card"><h4><%= p.name %></h4><p><%= p.desc %></p><div class="fs-4 fw-bold text-primary"><%= p.price %></div></div></div>
+                <% }) %>
+            </div>
+        </section>
+
+        <section class="py-5 bg-dark text-white rounded-5 p-5 mt-5">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="fw-bold mb-4">Contactanos</h2>
+                    <p class="fs-5 mb-1">📍 <%= data.address %></p>
+                    <p class="fs-5 mb-1">📧 <%= data.email %></p>
+                    <p class="fs-5">💬 WhatsApp: <%= data.whatsapp %></p>
+                </div>
+                <div class="col-md-6">
+                    <a href="https://wa.me/<%= data.whatsapp %>" class="btn btn-primary btn-lg w-100 py-3 rounded-pill fw-bold">Hablemos por WhatsApp</a>
                 </div>
             </div>
         </section>
-    </main>
-
-    <footer class="py-5 text-center opacity-40"><p>© 2026 <%= data.brandName %> | Powered by Elite Factory</p></footer>
-    
-    <a href="https://wa.me/<%= data.whatsapp %>" class="position-fixed bottom-0 end-0 m-4 btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; font-size: 30px; z-index: 9999;">
-        <i class="bi bi-whatsapp">W</i>
-    </a>
+    </div>
 </body>
 </html>

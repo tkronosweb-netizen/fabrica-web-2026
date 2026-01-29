@@ -7,49 +7,84 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --accent: <%= data.colorBtn %>; }
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .hero { 
-            height: 80vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<%= data.heroImg %>');
-            background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center;
-            color: white; border-radius: 0 0 40px 40px; text-align: center;
+        :root { --accent: <%= data.colorBtn %>; --glass: rgba(255, 255, 255, 0.7); }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Hero con Parallax Suave */
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('<%= data.heroImg %>');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            display: flex; align-items: center; justify-content: center; color: white;
+            text-align: center; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
         }
-        .card-service { border: none; border-radius: 20px; transition: 0.3s; background: #f8fafc; padding: 30px; }
-        .card-service:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); background: white; }
-        .btn-elite { background: var(--accent); color: white; border-radius: 50px; padding: 12px 35px; border: none; font-weight: 700; text-decoration: none; }
-        .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 1000; text-decoration: none; }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 30px;
+            padding: 40px; transition: 0.4s;
+        }
+        .glass-card:hover { transform: translateY(-10px); background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+
+        .btn-premium {
+            background: var(--accent); color: white; border: none;
+            padding: 18px 45px; border-radius: 100px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .btn-premium:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.2); color: white; }
+
+        .service-icon { color: var(--accent); font-size: 2.5rem; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <header class="hero animate__animated animate__fadeIn">
-        <div class="container">
-            <% if(data.logo) { %><img src="<%= data.logo %>" height="80" class="mb-4"><% } %>
-            <h1 class="display-1 fw-bold"><%= data.brandName %></h1>
-            <p class="fs-4 opacity-75 mb-5"><%= data.slogan %></p>
-            <a href="#contacto" class="btn-elite">Contactar</a>
+    <header class="hero-section">
+        <div class="container animate__animated animate__fadeInUp">
+            <h1 class="display-1 fw-black mb-3"><%= data.brandName %></h1>
+            <p class="fs-2 opacity-90 mb-5 fw-light"><%= data.slogan %></p>
+            <a href="#contacto" class="btn-premium">Reservar Ahora</a>
         </div>
     </header>
-    <div class="container py-5">
-        <section class="py-5 text-center">
-            <h2 class="display-4 fw-bold mb-5">Servicios</h2>
-            <div class="row g-4">
-                <% (data.services || []).forEach(s => { %>
-                    <div class="col-md-4"><div class="card-service h-100"><h4><%= s.title %></h4><p class="text-muted"><%= s.desc %></p><div class="fs-4 fw-bold" style="color: var(--accent)"><%= s.price %></div></div></div>
-                <% }) %>
-            </div>
-        </section>
+
+    <main class="container py-5 mt-n5">
+        <div class="row g-4 py-5" id="servicios">
+            <% (data.services || []).forEach((s, i) => { %>
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: <%= i*0.1 %>s">
+                    <div class="glass-card h-100">
+                        <div class="service-icon">✦</div>
+                        <h3 class="fw-bold"><%= s.title %></h3>
+                        <p class="text-muted"><%= s.desc %></p>
+                        <hr class="opacity-10">
+                        <div class="fs-3 fw-black" style="color: var(--accent)"><%= s.price %></div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
         <section id="contacto" class="py-5">
-            <div class="card p-5 border-0 shadow-lg rounded-5">
-                <h2 class="text-center mb-4 fw-bold">Hablemos</h2>
-                <form action="https://formspree.io/f/<%= data.email %>" method="POST" class="row g-3">
-                    <div class="col-md-6"><input type="text" name="name" class="form-control" placeholder="Nombre" required></div>
-                    <div class="col-md-6"><input type="email" name="email" class="form-control" placeholder="Email" required></div>
-                    <div class="col-12"><textarea name="msg" class="form-control" rows="4" placeholder="Mensaje"></textarea></div>
-                    <button type="submit" class="btn-elite w-100 py-3">Enviar</button>
-                </form>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5">
+                        <h2 class="display-4 fw-bold">Hablemos de tu proyecto</h2>
+                        <p class="text-muted">Completá tus datos y te contactaremos en menos de 24hs.</p>
+                    </div>
+                    <div class="glass-card shadow-lg border-0 p-5">
+                        <form action="https://formspree.io/f/<%= data.email %>" method="POST" class="row g-4">
+                            <div class="col-md-6"><input type="text" name="name" class="form-control form-control-lg bg-light border-0 p-4" placeholder="Nombre completo" required></div>
+                            <div class="col-md-6"><input type="email" name="email" class="form-control form-control-lg bg-light border-0 p-4" placeholder="Email" required></div>
+                            <div class="col-12"><textarea name="msg" class="form-control form-control-lg bg-light border-0 p-4" rows="5" placeholder="¿En qué podemos ayudarte?"></textarea></div>
+                            <div class="col-12"><button type="submit" class="btn-premium w-100 py-4 fs-4">Enviar Mensaje</button></div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
-    </div>
-    <a href="https://wa.me/<%= data.whatsapp %>" class="wa-float" target="_blank">W</a>
+    </main>
+
+    <footer class="py-5 text-center opacity-40"><p>© 2026 <%= data.brandName %> | Powered by Elite Factory</p></footer>
+    
+    <a href="https://wa.me/<%= data.whatsapp %>" class="position-fixed bottom-0 end-0 m-4 btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; font-size: 30px; z-index: 9999;">
+        <i class="bi bi-whatsapp">W</i>
+    </a>
 </body>
 </html>
